@@ -39,7 +39,7 @@ export default function Home() {
 
   return (
     <>
-      <AlurakutMenu githubUser={usuarioAleatorio}/>
+      <AlurakutMenu githubUser={usuarioAleatorio} />
       <MainGrid>
         {/* <Box style="grid-area: profileArea;"> */}
         <div className="profileArea" style={{ gridArea: 'profileArea' }}>
@@ -56,17 +56,17 @@ export default function Home() {
 
           <Box>
             <h2 className="subTitle">O que você deseja fazer?</h2>
-            <form onSubmit={function handleCreateComunidade(e) {
+            <form onSubmit={function handleCriaComunidade(e) {
               e.preventDefault();
-              const dadosDoForm = new formData(e.target)
+              const dadosDoForm = new FormData(e.target);
 
               const comunidade = {
                 id: new Date().toISOString(),
-                titulo: dadosDoForm.get('title'),
-                image: dadosDoForm.get('image')
+                title: dadosDoForm.get('title'),
+                image: dadosDoForm.get('image'),
               }
-              
-              const comunidadesAtualizadas = [...comunidades, comunidade]
+
+              const comunidadesAtualizadas = [...comunidades, comunidade];
               setComunidades(comunidadesAtualizadas)
             }}>
               <div>
@@ -92,7 +92,7 @@ export default function Home() {
         </div>
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
           <ProfileRelationsBoxWrapper>
-          <h2 className="smallTitle">
+            <h2 className="smallTitle">
               Comunidades ({comunidades.length})
             </h2>
             <ul>
