@@ -76,7 +76,7 @@ export default function Home(props) {
         setSeguidores(respostaCompleta)
       })
 
-      fetch(`https://api.github.com/users/${githubUser}/following`)
+    fetch(`https://api.github.com/users/${githubUser}/following`)
       .then(function (respostaDoServidor) {
         return respostaDoServidor.json()
       })
@@ -182,8 +182,8 @@ export default function Home(props) {
           </Box>
         </div>
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
-          <ProfileRelationsBox title="Seguidores" items={seguidores} total={numerosSegui.followers}/>
-          <ProfileRelationsBox title="Seguidos" items={seguidos} total={numerosSegui.following}/>
+          <ProfileRelationsBox title="Seguidores" items={seguidores} total={numerosSegui.followers} />
+          <ProfileRelationsBox title="Seguindo" items={seguidos} total={numerosSegui.following} />
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
               Comunidades ({comunidades.length})
@@ -210,7 +210,7 @@ export default function Home(props) {
 export async function getServerSideProps(context) {
   const cookies = nookies.get(context)
   const token = cookies.USER_TOKEN
-  const { githubUser } = jwt.decode(token)
+
 
   const { isAuthenticated } = await fetch('https://alurakut-rho-silk.vercel.app/api/auth', {
     headers: {
@@ -227,6 +227,8 @@ export async function getServerSideProps(context) {
       }
     }
   }
+
+  const { githubUser } = jwt.decode(token)
 
   return {
     props: {
