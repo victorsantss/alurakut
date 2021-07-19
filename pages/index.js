@@ -27,41 +27,63 @@ function ProfileRelationsBox(propriedades) {
   return (
     <ProfileRelationsBoxWrapper>
       <h2 className="smallTitle">
-        {propriedades.title} ({propriedades.items.length})
+        {propriedades.title} ({propriedades.total})
       </h2>
 
       <ul>
-        {/* {seguidores.map((itemAtual) => {
+        {propriedades.items.slice(0, 6).map((itemAtual) => {
           return (
-            <li key={itemAtual}>
-              <a href={`/users/${itemAtual}`}>
-                <img src={`https://github.com/${itemAtual}.png`} />
-                <span>{itemAtual}</span>
+            <li key={itemAtual.id}>
+              <a href={itemAtual.html_url} target="_blank" rel="noopener noreferrer" title="Site do usuário">
+                <img src={itemAtual.avatar_url} alt="Avatar do usuário" />
+                <span>{itemAtual.login}</span>
               </a>
             </li>
-          )
-        })} */}
+          );
+        })}
       </ul>
     </ProfileRelationsBoxWrapper>
   )
 }
 
 export default function Home(props) {
-  const usuarioAleatorio = props.githubUser;
+  const githubUser = props.githubUser;
   const [comunidades, setComunidades] = React.useState([])
 
   const [imagem, setImagem] = React.useState([''])
 
   const [seguidores, setSeguidores] = React.useState([])
+  const [seguidos, setSeguidos] = React.useState([])
+  const [numerosSegui, setNumerosSegui] = React.useState([]);
+
+  // useEffect dos seguidores e seguidos
+
   React.useEffect(function () {
     // GET
-    fetch('https://api.github.com/users/victorsantss/followers')
+    fetch(`https://api.github.com/users/${githubUser}`)
+      .then(function (respostaDoServidor) {
+        return respostaDoServidor.json()
+      })
+      .then(function (respostaCompleta) {
+        setNumerosSegui(respostaCompleta)
+      })
+
+    fetch(`https://api.github.com/users/${githubUser}/followers`)
       .then(function (respostaDoServidor) {
         return respostaDoServidor.json()
       })
       .then(function (respostaCompleta) {
         setSeguidores(respostaCompleta)
       })
+
+      fetch(`https://api.github.com/users/${githubUser}/following`)
+      .then(function (respostaDoServidor) {
+        return respostaDoServidor.json()
+      })
+      .then(function (respostaCompleta) {
+        setSeguidos(respostaCompleta)
+      })
+
 
     // API GraphQL
     fetch('https://graphql.datocms.com/', {
@@ -92,11 +114,11 @@ export default function Home(props) {
 
   return (
     <>
-      <AlurakutMenu githubUser={usuarioAleatorio} />
+      <AlurakutMenu githubUser={githubUser} />
       <MainGrid>
         {/* <Box style="grid-area: profileArea;"> */}
         <div className="profileArea" style={{ gridArea: 'profileArea' }}>
-          <ProfileSidebar githubUser={usuarioAleatorio} />
+          <ProfileSidebar githubUser={githubUser} />
         </div>
         <div className="welcomeArea" style={{ gridArea: 'welcomeArea' }}>
           <Box>
@@ -116,7 +138,7 @@ export default function Home(props) {
               const comunidade = {
                 title: dadosDoForm.get('title'),
                 imageUrl: dadosDoForm.get('image'),
-                creatorSlug: usuarioAleatorio,
+                creatorSlug: githubUser,
               }
 
               fetch('/api/comunidades', {
@@ -160,13 +182,14 @@ export default function Home(props) {
           </Box>
         </div>
         <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
-          <ProfileRelationsBox title="Seguidores" items={seguidores} />
+          <ProfileRelationsBox title="Seguidores" items={seguidores} total={numerosSegui.followers}/>
+          <ProfileRelationsBox title="Seguidos" items={seguidos} total={numerosSegui.following}/>
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
               Comunidades ({comunidades.length})
             </h2>
             <ul>
-              {comunidades.map((itemAtual) => {
+              {comunidades.slice(0, 6).map((itemAtual) => {
                 return (
                   <li key={itemAtual.id}>
                     <a href={`/communities/${itemAtual.id}`}>
