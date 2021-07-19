@@ -52,15 +52,6 @@ export default function Home(props) {
 
   const [imagem, setImagem] = React.useState([''])
 
-  const pessoasFavoritas = [
-    'juunegreiros',
-    'omariosouto',
-    'peas',
-    'rafaballerini',
-    'GBDev13',
-    'realcaldeira'
-  ]
-
   const [seguidores, setSeguidores] = React.useState([])
   React.useEffect(function () {
     // GET
@@ -181,24 +172,6 @@ export default function Home(props) {
                     <a href={`/communities/${itemAtual.id}`}>
                       <img src={itemAtual.imageUrl} />
                       <span>{itemAtual.title}</span>
-                    </a>
-                  </li>
-                )
-              })}
-            </ul>
-          </ProfileRelationsBoxWrapper>
-          <ProfileRelationsBoxWrapper>
-            <h2 className="smallTitle">
-              Pessoas da comunidade ({pessoasFavoritas.length})
-            </h2>
-
-            <ul>
-              {pessoasFavoritas.map((itemAtual) => {
-                return (
-                  <li key={itemAtual}>
-                    <a href={`/users/${itemAtual}`}>
-                      <img src={`https://github.com/${itemAtual}.png`} />
-                      <span>{itemAtual}</span>
                     </a>
                   </li>
                 )
