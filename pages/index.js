@@ -56,7 +56,6 @@ export default function Home(props) {
   const [seguidos, setSeguidos] = React.useState([])
   const [numerosSegui, setNumerosSegui] = React.useState([]);
 
-  // useEffect dos seguidores e seguidos
 
   React.useEffect(function () {
     // GET
@@ -166,10 +165,10 @@ export default function Home(props) {
               <div>
                 <input
                   placeholder="Coloque uma URL para usarmos de capa"
-                  value={imagem}
-                  onChange={(evento) => {
-                    setImagem(`https://source.unsplash.com/featured/?${evento.target.value}`)
-                  }}
+                  // value={imagem}
+                  // onChange={(evento) => {
+                  //   setImagem(`https://source.unsplash.com/featured/?${evento.target.value}`)
+                  // }}
                   name="image"
                   aria-label="Coloque uma URL para usarmos de capa"
                 />
