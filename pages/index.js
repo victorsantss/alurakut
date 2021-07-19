@@ -1,4 +1,6 @@
 import React from 'react'
+import nookies from 'nookies'
+import jwt from 'jsonwebtoken'
 import MainGrid from '../src/components/MainGrid'
 import Box from '../src/components/Box'
 import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '../src/lib/AlurakutCommons';
@@ -44,9 +46,12 @@ function ProfileRelationsBox(propriedades) {
   )
 }
 
-export default function Home() {
-  const usuarioAleatorio = 'victorsantss';
+export default function Home(props) {
+  const usuarioAleatorio = props.githubUser;
   const [comunidades, setComunidades] = React.useState([])
+
+  const [imagem, setImagem] = React.useState([''])
+
   const pessoasFavoritas = [
     'juunegreiros',
     'omariosouto',
@@ -148,6 +153,10 @@ export default function Home() {
               <div>
                 <input
                   placeholder="Coloque uma URL para usarmos de capa"
+                  value={imagem}
+                  onChange={(evento) => {
+                    setImagem(`https://source.unsplash.com/featured/?${evento.target.value}`)
+                  }}
                   name="image"
                   aria-label="Coloque uma URL para usarmos de capa"
                 />
@@ -200,4 +209,32 @@ export default function Home() {
       </MainGrid>
     </>
   )
+}
+
+export async function getServerSideProps(context) {
+  const cookies = nookies.get(context)
+  const token = cookies.USER_TOKEN
+  const { githubUser } = jwt.decode(token)
+
+  const { isAuthenticated } = await fetch('https://https://alurakut-rho-silk.vercel.app//api/auth', {
+    headers: {
+      Authorization: token
+    }
+  })
+    .then((resposta) => resposta.json())
+
+  if (!isAuthenticated) {
+    return {
+      redirect: {
+        destination: '/login',
+        permanent: false,
+      }
+    }
+  }
+
+  return {
+    props: {
+      githubUser
+    }
+  }
 }
