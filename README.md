@@ -48,7 +48,7 @@ $ yarn start
 
 ### 🔗 Link do projeto online
 
-[Letmeask](https://alurakut-rho-silk.vercel.app/login)
+[Reakut](https://alurakut-rho-silk.vercel.app/login)
 
 <hr />
 
