@@ -2,88 +2,58 @@ import React from 'react'
 import nookies from 'nookies'
 import jwt from 'jsonwebtoken'
 import MainGrid from '../src/components/MainGrid'
+import ProfileSidebar from '../src/components/ProfileSidebar'
 import Box from '../src/components/Box'
-import { AlurakutMenu, AlurakutProfileSidebarMenuDefault, OrkutNostalgicIconSet } from '../src/lib/AlurakutCommons';
+import { AlurakutMenu, OrkutNostalgicIconSet } from '../src/lib/AlurakutCommons';
 import { ProfileRelationsBoxWrapper } from '../src/components/ProfileRelations';
-
-function ProfileSidebar(propriedades) {
-  return (
-    <Box as="aside">
-      <img src={`https://github.com/${propriedades.githubUser}.png`} style={{ borderRadius: '8px' }} />
-      <hr />
-      <p>
-        <a className="boxLink" href={`https://github.com/${propriedades.githubUser}`}>
-          @{propriedades.githubUser}
-        </a>
-      </p>
-      <hr />
-
-      <AlurakutProfileSidebarMenuDefault />
-    </Box>
-  )
-}
-
-function ProfileRelationsBox(propriedades) {
-  return (
-    <ProfileRelationsBoxWrapper>
-      <h2 className="smallTitle">
-        {propriedades.title} ({propriedades.total})
-      </h2>
-
-      <ul>
-        {propriedades.items.slice(0, 6).map((itemAtual) => {
-          return (
-            <li key={itemAtual.id}>
-              <a href={itemAtual.html_url} target="_blank" rel="noopener noreferrer" title="Site do usuário">
-                <img src={itemAtual.avatar_url} alt="Avatar do usuário" />
-                <span>{itemAtual.login}</span>
-              </a>
-            </li>
-          );
-        })}
-      </ul>
-    </ProfileRelationsBoxWrapper>
-  )
-}
+import ProfileRelationsBox from '../src/components/ProfileRelationsBox'
 
 export default function Home(props) {
   const githubUser = props.githubUser;
   const [comunidades, setComunidades] = React.useState([])
 
-  const [imagem, setImagem] = React.useState([''])
+  const [followNum, setFollowNum] = React.useState([]);
+  const [followers, setFollowers] = React.useState([]);
+  const [following, setFollowing] = React.useState([]);
+  const [currentPage, setCurrentPage] = React.useState(1);
 
-  const [seguidores, setSeguidores] = React.useState([])
-  const [seguidos, setSeguidos] = React.useState([])
-  const [numerosSegui, setNumerosSegui] = React.useState([]);
+  React.useEffect(() => {
+    const perPage = 3;
+    const ENDPOINT = `https://api.github.com/users/${githubUser}/followers`;
+    const URL = `${ENDPOINT}?per_page=${perPage}&page=${currentPage}&order=DESC`;
+    fetch(URL)
+      .then((response) => response.json())
+      .then((newFollowers) => setFollowers((prevFollowers) => [...prevFollowers, ...newFollowers]))
+  }, [currentPage]);
+
+  React.useEffect(() => {
+    const perPage = 3;
+    const ENDPOINT = `https://api.github.com/users/${githubUser}/following`;
+    const URL = `${ENDPOINT}?per_page=${perPage}&page=${currentPage}&order=DESC`;
+    fetch(URL)
+      .then((response) => response.json())
+      .then((newFollowing) => setFollowing((prevFollowing) => [...prevFollowing, ...newFollowing]))
+  }, [currentPage]);
+
+  React.useEffect(() => {
+    fetch(`https://api.github.com/users/${githubUser}`)
+      .then((response) => response.json())
+      .then((followResponse) => setFollowNum(followResponse))
+  }, []);
+
+  React.useEffect(() => {
+    const intersectionObserver = new IntersectionObserver(entries => {
+      if (entries.some(entry => entry.isIntersecting)) {
+        console.log('Sentinela appears!', currentPage + 1)
+        setCurrentPage((currentValue) => currentValue + 1);
+      }
+    })
+    intersectionObserver.observe(document.querySelector('#sentinela'));
+    return () => intersectionObserver.disconnect();
+  }, []);
 
 
   React.useEffect(function () {
-    // GET
-    fetch(`https://api.github.com/users/${githubUser}`)
-      .then(function (respostaDoServidor) {
-        return respostaDoServidor.json()
-      })
-      .then(function (respostaCompleta) {
-        setNumerosSegui(respostaCompleta)
-      })
-
-    fetch(`https://api.github.com/users/${githubUser}/followers`)
-      .then(function (respostaDoServidor) {
-        return respostaDoServidor.json()
-      })
-      .then(function (respostaCompleta) {
-        setSeguidores(respostaCompleta)
-      })
-
-    fetch(`https://api.github.com/users/${githubUser}/following`)
-      .then(function (respostaDoServidor) {
-        return respostaDoServidor.json()
-      })
-      .then(function (respostaCompleta) {
-        setSeguidos(respostaCompleta)
-      })
-
-
     // API GraphQL
     fetch('https://graphql.datocms.com/', {
       method: 'POST',
@@ -115,7 +85,6 @@ export default function Home(props) {
     <>
       <AlurakutMenu githubUser={githubUser} />
       <MainGrid>
-        {/* <Box style="grid-area: profileArea;"> */}
         <div className="profileArea" style={{ gridArea: 'profileArea' }}>
           <ProfileSidebar githubUser={githubUser} />
         </div>
@@ -124,7 +93,6 @@ export default function Home(props) {
             <h1 className="title">
               Bem vindo(a)
             </h1>
-
             <OrkutNostalgicIconSet />
           </Box>
 
@@ -159,30 +127,24 @@ export default function Home(props) {
                 <input
                   placeholder="Qual vai ser o nome da sua comunidade?"
                   name="title"
+                  required="required"
                   aria-label="Qual vai ser o nome da sua comunidade?"
                   type="text" />
               </div>
               <div>
                 <input
                   placeholder="Coloque uma URL para usarmos de capa"
-                  // value={imagem}
-                  // onChange={(evento) => {
-                  //   setImagem(`https://source.unsplash.com/featured/?${evento.target.value}`)
-                  // }}
                   name="image"
+                  required="required"
                   aria-label="Coloque uma URL para usarmos de capa"
                 />
               </div>
-
               <button>
                 Criar Comunidade
               </button>
             </form>
           </Box>
-        </div>
-        <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
-          <ProfileRelationsBox title="Seguidores" items={seguidores} total={numerosSegui.followers} />
-          <ProfileRelationsBox title="Seguindo" items={seguidos} total={numerosSegui.following} />
+
           <ProfileRelationsBoxWrapper>
             <h2 className="smallTitle">
               Comunidades ({comunidades.length})
@@ -200,6 +162,10 @@ export default function Home(props) {
               })}
             </ul>
           </ProfileRelationsBoxWrapper>
+        </div>
+        <div className="profileRelationsArea" style={{ gridArea: 'profileRelationsArea' }}>
+          <ProfileRelationsBox title="Seguidores" items={followers} total={followNum.followers} />
+          <ProfileRelationsBox title="Seguindo" items={following} total={followNum.following} />
         </div>
       </MainGrid>
     </>

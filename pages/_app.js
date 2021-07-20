@@ -1,5 +1,6 @@
 import { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { AlurakutStyles } from '../src/lib/AlurakutCommons';
+import Head from 'next/head'
 
 const GlobalStyle = createGlobalStyle`
   /* Reset CSS (Necolas Reset CSS <3) */
@@ -9,7 +10,7 @@ const GlobalStyle = createGlobalStyle`
     box-sizing: border-box;
   }
   body {
-    font-family: sans-serif;
+    font-family: 'Nunito',sans-serif;
     background-color: #A2A9B8;
   }
   #__next {
@@ -34,10 +35,13 @@ const theme = {
 export default function App({ Component, pageProps }) {
   return (
     <>
-      <GlobalStyle />
-      <ThemeProvider theme={theme}>
-        <Component {...pageProps} />
-      </ThemeProvider>
+      <Head>
+            <link href="https://fonts.googleapis.com/css2?family=Nunito&display=swap" rel="stylesheet"/>
+      </Head>
+            <GlobalStyle />
+            <ThemeProvider theme={theme}>
+              <Component {...pageProps} />
+            </ThemeProvider>
     </>
-  )
+          )
 }

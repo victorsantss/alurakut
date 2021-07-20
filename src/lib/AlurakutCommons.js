@@ -221,9 +221,9 @@ export function AlurakutProfileSidebarMenuDefault() {
 }
 AlurakutProfileSidebarMenuDefault.Wrapper = styled.div`
   a {
-    font-size: 12px;
+    font-size: 15px;
     color: #2E7BB4;
-    margin-bottom: 16px;
+    margin-bottom: 30px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -255,7 +255,7 @@ export function OrkutNostalgicIconSet(props) {
           </span>
           <span className="OrkutNostalgicIconSet__number" style={{ gridArea: 'number' }}>
             <img key={`orkut__icon_set__${slug}_img`} className="OrkutNostalgicIconSet__iconSample" src={`https://alurakut.vercel.app/icons/${icon}.svg`} />
-            {props[slug] ? props[slug] : 0}
+            {props[slug] ? props[slug] : 999}
           </span>
         </li>
       ))}
@@ -283,7 +283,7 @@ export function OrkutNostalgicIconSet(props) {
   )
 }
 OrkutNostalgicIconSet.List = styled.ul`
-  margin-top: 32px;
+  margin-top: 10px;
   list-style: none;
   display: flex;
   justify-content: space-between;

@@ -5,7 +5,7 @@ const Box = styled.div`
   border-radius: 8px;
   padding: 16px;
   /* CSS Pré-Pronto */
-  margin-bottom: 10px;
+  margin-bottom: 5px;
   .boxLink {
     font-size: 14px;
     color: #2E7BB4;
@@ -13,12 +13,11 @@ const Box = styled.div`
     font-weight: 800;
   }
   .title {
-    font-size: 32px;
+    font-size: 20px;
     font-weight: 400;
-    margin-bottom: 20px;
   }
   .subTitle {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 400;
     margin-bottom: 20px;
   }
@@ -41,7 +40,7 @@ const Box = styled.div`
     color: #333333;
     border: 0;
     padding: 14px 16px;
-    margin-bottom: 14px;
+    margin-bottom: 5px;
     border-radius: 10000px;
     ::placeholder {
       color: #333333;
