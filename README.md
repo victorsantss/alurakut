@@ -35,7 +35,7 @@ $ git clone https://github.com/victorsantss/alurakut.git
 
 ```bash
 # Acesse a pasta do projeto no terminal/cmd
-$ cd NLW-6-Firebase
+$ cd alurakut
 
 # Instale as dependências
 $ yarn install
